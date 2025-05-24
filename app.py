@@ -14,11 +14,14 @@ def scrape_zillow():
 
         session = HTMLSession()
         response = session.get(zillow_url)
-        response.html.render(timeout=30)
+        # Add sleep to let JS load fully
+        response.html.render(timeout=30, sleep=3)
 
         address = response.html.find('[data-testid="home-details-summary-headline"]', first=True)
         price = response.html.find('[data-testid="price"]', first=True)
-        facts = response.html.find('[data-testid="bed-bath-beyond-text"]')
+
+        # Updated selector for beds, baths, sqft list items
+        facts = response.html.find('ul.StyledHomeDetailsList-c11n-8-68-3__sc-17h3l6a-0 li')
 
         beds = facts[0].text if len(facts) > 0 else None
         baths = facts[1].text if len(facts) > 1 else None
@@ -35,6 +38,7 @@ def scrape_zillow():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
