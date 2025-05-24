@@ -14,14 +14,11 @@ def scrape_zillow():
 
         session = HTMLSession()
         response = session.get(zillow_url)
-        # Add sleep to let JS load fully
-        response.html.render(timeout=30, sleep=3)
+        response.html.render(timeout=60, sleep=5, scrolldown=3)
 
-        address = response.html.find('[data-testid="home-details-summary-headline"]', first=True)
-        price = response.html.find('[data-testid="price"]', first=True)
-
-        # Updated selector for beds, baths, sqft list items
-        facts = response.html.find('ul.StyledHomeDetailsList-c11n-8-68-3__sc-17h3l6a-0 li')
+        address = response.html.find('h1.ds-address-container', first=True)
+        price = response.html.find('span.ds-value', first=True)
+        facts = response.html.find('span.ds-bed-bath-living-area span')
 
         beds = facts[0].text if len(facts) > 0 else None
         baths = facts[1].text if len(facts) > 1 else None
