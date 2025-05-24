@@ -1,3 +1,4 @@
-flask
-requests-html
+requests-html==0.10.0
+lxml_html_clean
 gunicorn
+flask
